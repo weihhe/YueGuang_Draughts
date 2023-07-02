@@ -1,0 +1,208 @@
+@charset "utf-8";
+/* CSS Document */
+body{
+	margin:0px;
+	font-family:Arial, Helvetica, sans-serif;
+	
+}
+#head{
+	width:810px;
+	height: 27px;
+	text-align:left;
+	margin:5px auto;
+	padding:5px;
+	overflow: hidden;
+}
+#button{
+	width: 29px;
+	height: 27px;
+	position: relative;
+	left: 566px;
+	top:3px;
+	cursor:pointer;
+	
+}
+#logo{
+	width: 196px;
+	height: 27px;
+	position: relative;
+	left: 0px;
+	top:0px;
+	
+}
+#foot{
+	width:810px;
+	text-align:center;
+	margin:5px auto;
+	padding:2px;
+}
+#board{
+	width:820px;
+	height:820px;
+	margin:5px auto;
+	
+	
+}
+#tb1{
+	border-collapse: collapse;
+	border:1px solid brown;
+	position:relative;
+	left:0px;
+	top:0px;
+	
+}
+#tb1 td{
+	border-collapse: collapse;
+	border:1px solid brown;
+	font-family:Arial, Helvetica, sans-serif;
+	padding:0px;
+	
+	
+	width:80px;
+	height:80px;
+	
+}
+#tb2{
+	
+	border-collapse: collapse;
+	padding:0px;
+	position:relative;
+	left:8px;
+	top:-802px;
+	
+}
+#tb2 td{
+	
+	height:71px;
+	width:71px;
+	padding:5px;
+}
+
+#tb3{
+	
+	border-collapse: collapse;
+	padding:0px;
+	position:relative;
+	left:0px;
+	top:-1620px;
+	cursor:pointer;
+	
+}
+#tb3 td{
+	
+	height:71px;
+	width:71px;
+	padding:5px;
+	cursor:pointer;
+}
+
+#tb4{
+	
+	border-collapse: collapse;
+	padding:0px;
+	position:relative;
+	left:0px;
+	top:-2430px;
+	
+}
+#tb4 td{
+	
+	height:71px;
+	width:71px;
+	padding:5px;
+}
+.pointer{
+	cursor:pointer;
+}
+.td2{
+	background-color:#000000;
+	color:#ffffff;
+}
+.td3{
+	background-color:brown;
+	color:#ffffff;
+}
+.c1{
+	background-color:PaleGreen;
+}
+.c2{
+	background-color:red;
+}
+.c3{
+	background-color:yellow;
+}
+.c4{
+	background-color:orange;
+}
+.c5{
+	background-color:DeepSkyBlue;
+}
+.c6{
+	background-color:LightBlue;
+}
+.d1{
+	margin:10px auto;
+	width:1000px;
+	text-align:center;
+}
+.d2{
+	margin:10px auto;
+	width:1687px;
+	text-align:left;
+}
+
+
+.card1{
+	border:1px solid #000000;
+	width:120px;
+	height:145px;
+	text-align:center;
+	padding-top:25px;
+	font-size:100px;
+	font-family:"Times New Roman", Times, serif;
+	cursor:pointer;
+}
+.card2{
+	border:1px solid #000000;
+	width:120px;
+	height:170px;
+	background-color:DeepSkyBlue;
+}
+.card3{
+	border:1px solid #ff0000;
+	width:120px;
+	height:145px;
+	text-align:center;
+	padding-top:25px;
+	font-size:100px;
+	font-family:"Times New Roman", Times, serif;
+	cursor:pointer;
+}
+.bt1{
+	border:1px solid #000000;
+	color:#FFF;
+	background-color:#000;
+	font-weight:bold;
+	padding:8px;
+	width:105px;
+	text-align:center;
+	cursor:pointer;
+}
+.bt2{
+	border:1px solid #000000;
+	color:#000;
+	background-color:#FFF;
+	font-weight:bold;
+	padding:8px;
+	width:105px;
+	text-align:center;
+	cursor:pointer;
+}
+#timerDisplay {
+	font-size: 24px; /* 调整显示的时间大小 */
+  }
+
+#timerButton {
+	font-size: 18px; /* 调整计时按钮的大小 */
+	padding: 10px 20px; /* 调整按钮内边距 */
+  }
