@@ -571,7 +571,6 @@
 
 		}
 		function makekeatmove(clr, sd, ss) {
-
 			var re = false;
 			for (var n = 0; n < 4; n++) { //四个方位
 				if (n != sd) {//对当前落点的其余位置进行一个判断，判断和上一次前进方向不同的方向是否有可移动的棋子
@@ -728,11 +727,11 @@
 			var nsmin = smin;
 			makemove();//生成一个移动
 			if (semovea.length == 0 && smovea.length == 0) {//如果没有移动或者普通移动，结束游戏？
-				return nowplay * -5000;//返回指针？
+				return nowplay * -5000;//抵达终端节点
 
 			}
 			if (sdp >= sdeep) {//剪枝 如果sdp大于了sdeep，就不再进行更深的搜索
-				if (semovea.length == 0) {//已经不用搜索了
+				if (semovea.length == 0) {//有吃必吃 要把吃子的序列清除干净
 					gv = gamevalue();
 					return gv;//返回估值
 				}
@@ -776,9 +775,9 @@
 				gvalue = searchmove(sd, nsmax, nsmin);//递归次数等于shmovea的长度
 				boarda = sboarda[sboarda.length - 1].concat();//将搜索到的最优棋盘赋给原始棋盘
 
-				if (nowplay > 0) {//nowplay：这个变量代表当前玩家。 它被初始化为1。
-					if (gvalue < nsmin) {//如果得分小于全局最小值，则直接更新最佳得分(mvalue)和最佳移动序号。
-						mvalue = gvalue;//将当前的游戏估值保存起来
+				if (nowplay > 0) {//nowplay：如果是MAX层，维护α
+					if (gvalue < nsmin) {//当前的gvalue小于nsmin
+						mvalue = gvalue;//更新
 						moven = n;//n是当前在落点序列里棋子的位置
 						break;
 					} else {
