@@ -722,10 +722,11 @@
 			}
 		}
 		class NodeInfo {
-			constructor(value, alpha, beta) { //节点内值类型
+			constructor(value, alpha, beta, board) { //节点内值类型
 				this.value = value;
 				this.alpha = alpha;
 				this.beta = beta;
+				this.board = board;
 			}
 		}
 		const map = new Map();
@@ -753,7 +754,7 @@
 			}
 
 			var ssestonea = sestonea.concat();
-			sboarda.push(boarda.concat());//将棋盘的导入到搜索棋盘
+			sboarda.push(boarda.concat());//将棋盘的导入到搜索`棋盘
 			nowplay *= -1;//换边，进入到下一层
 			var mvalue = nowplay * 10000;
 			var moven = -1;
@@ -764,44 +765,46 @@
 
 			const key = [sdp, p];
 			for (var n = 0; n < shmovea.length; n++) {//将每一个位置对应的吃子序列的终点的期盼状态修改为起点位置，并将起点位置设置为0，代表棋子已经走到了终点位置
-				boarda[shmovea[n][shmovea[n].length - 1]] = boarda[shmovea[n][0]];
-				boarda[shmovea[n][0]] = 0;
+				
 				p = shmovea[n][shmovea[n].length - 1];//p为终点的棋子坐标
-				if (map.has(key)) {
+				var pd = false;
+				map.forEach((v, k) => {
+						if (k[0] == key[0] || k[1] == key[1]) {
+							pd = true;
+						}
+					})
+				if (pd) {
+					sd++;
 					const tempNode = map.get(key);//查看是否有
 					gvalue = tempNode.value;
 					nsmin = tempNode.alpha;
 					nsmax = tempNode.beta;
+					boarda = tempNode.board;
+					pd = false;
 				}
+				else {
+				boarda[shmovea[n][shmovea[n].length - 1]] = boarda[shmovea[n][0]];
+				boarda[shmovea[n][0]] = 0;
+					if (p < 5 && boarda[p] == 1) {//如果p小于5且是白棋 则代表是一个白王
+						boarda[p] = 10;
+					}
+					if (p > 44 && boarda[p] == -1) {//如果p大于44且是一个黑棋 则是一个黑王
+						boarda[p] = -10;
+					}
 
-				if (p < 5 && boarda[p] == 1) {//如果p小于5且是白棋 则代表是一个白王
-					boarda[p] = 10;
-				}
-				if (p > 44 && boarda[p] == -1) {//如果p大于44且是一个黑棋 则是一个黑王
-					boarda[p] = -10;
-				}
+					if (ssestonea.length != 0) {//遍历被吃的序列，把它们的位置置为空
+						for (var m = 0; m < ssestonea[n].length; m++) {
+							boarda[ssestonea[n][m]] = 0;
+						}
+					}
 
-				if (ssestonea.length != 0) {//遍历被吃的序列，把它们的位置置为空
-					for (var m = 0; m < ssestonea[n].length; m++) {
-						boarda[ssestonea[n][m]] = 0;
+					gvalue = searchmove(sd, nsmax, nsmin);//递归次数等于shmovea的长度
+					boarda = sboarda[sboarda.length - 1].concat();//将搜索到的最优棋盘赋给原始棋盘
+					
+					if (!pd) {
+						map.set((key), new NodeInfo(gvalue, nsmin, nsmax, boarda));
 					}
 				}
-
-				gvalue = searchmove(sd, nsmax, nsmin);//递归次数等于shmovea的长度
-				boarda = sboarda[sboarda.length - 1].concat();//将搜索到的最优棋盘赋给原始棋盘
-                var pd =true;
-                 map.forEach((v,k) => {
-					if(k[0]==key[0]&&k[1]==key[1]){
-						pd=false
-					}
-						})
-				if (pd) {
-
-
-					map.set((key), new NodeInfo(gvalue, nsmin, nsmax));
-				}
-
-
 
 				if (nowplay > 0) {//nowplay：如果是MAX层，维护α
 					if (gvalue < nsmin) {//当前的gvalue小于nsmin

@@ -247,7 +247,7 @@
 		var clkeata = [];
 		var cestep = 0;
 		var sboarda = [];
-		var sdeep = 5;
+		var sdeep = 7;
 		var clkbm = 1;
 		var gamestep = 0;
 		var spoint = 0;
@@ -721,11 +721,17 @@
 
 			}
 		}
-
-		const map = new Map();//设置置换表
-		var key;
-		var gvalue;
+		class NodeInfo {
+			constructor(value, alpha, beta) { //节点内值类型
+				this.value = value;
+				this.alpha = alpha;
+				this.beta = beta;
+			}
+		}
+		const map = new Map();
+		var p;
 		function searchmove(sdp, smax, smin) {
+
 			var nsmax = smax;//假设现在就是最大值和最小值
 			var nsmin = smin;
 			makemove();//生成一个移动
@@ -736,7 +742,7 @@
 			if (sdp >= sdeep) {//剪枝 如果sdp大于了sdeep，就不再进行更深的搜索
 				if (semovea.length == 0) {//有吃必吃 要把吃子的序列清除干净
 					gv = gamevalue();
-					return gv;//返回估值 表示达到了终端节点
+					return gv;//返回估值
 				}
 			}
 			if (semovea.length != 0) {//如果 待吃（待走） 序列内有棋子 应该把它们先吃掉 再在此基础上递归
@@ -748,7 +754,7 @@
 
 			var ssestonea = sestonea.concat();
 			sboarda.push(boarda.concat());//将棋盘的导入到搜索棋盘
-			nowplay *= -1;//换边
+			nowplay *= -1;//换边，进入到下一层
 			var mvalue = nowplay * 10000;
 			var moven = -1;
 			var sd = sdp;
@@ -756,39 +762,42 @@
 				sd++;//吃动作不占用步数
 			}
 
-
+			const key = [sdp, p];
 			for (var n = 0; n < shmovea.length; n++) {//将每一个位置对应的吃子序列的终点的期盼状态修改为起点位置，并将起点位置设置为0，代表棋子已经走到了终点位置
 				boarda[shmovea[n][shmovea[n].length - 1]] = boarda[shmovea[n][0]];
 				boarda[shmovea[n][0]] = 0;
+				p = shmovea[n][shmovea[n].length - 1];//p为终点的棋子坐标
+				if (map.has(key)) {
+					const tempNode = map.get(key);//查看是否有
+					gvalue = tempNode.value;
+					nsmin = tempNode.alpha;
+					nsmax = tempNode.beta;
+				}
+				
+				if (p < 5 && boarda[p] == 1) {//如果p小于5且是白棋 则代表是一个白王
+					boarda[p] = 10;
+				}
+				if (p > 44 && boarda[p] == -1) {//如果p大于44且是一个黑棋 则是一个黑王
+					boarda[p] = -10;
+				}
 
-				tempNum = shmovea[n][shmovea[n].length - 1];//保留终点
-				key = [sdp, tempNum];
-					if (map.has(key)) {
-						// 将键值对添加到 Map 中
-						gvalue = map.get(key);
-					}
-				else {
-					p = shmovea[n][shmovea[n].length - 1];//p为终点的棋子坐标
-					if (p < 5 && boarda[p] == 1) {//如果p小于5且是白棋 则代表是一个白王
-						boarda[p] = 10;
-					}
-					if (p > 44 && boarda[p] == -1) {//如果p大于44且是一个黑棋 则是一个黑王
-						boarda[p] = -10;
-					}
-
-					if (ssestonea.length != 0) {//遍历被吃的序列，把它们的位置置为空
-						for (var m = 0; m < ssestonea[n].length; m++) {
-							boarda[ssestonea[n][m]] = 0;
-						}
-
-					}
-					gvalue = searchmove(sd, nsmax, nsmin)
-					if (!map.has(key)) {
-						// 将键值对添加到 Map 中
-						map.set(key,gvalue);
+				if (ssestonea.length != 0) {//遍历被吃的序列，把它们的位置置为空
+					for (var m = 0; m < ssestonea[n].length; m++) {
+						boarda[ssestonea[n][m]] = 0;
 					}
 				}
+
+				gvalue = searchmove(sd, nsmax, nsmin);//递归次数等于shmovea的长度
 				boarda = sboarda[sboarda.length - 1].concat();//将搜索到的最优棋盘赋给原始棋盘
+                var pd =true;
+                 map.forEach((v,k) => {
+					if(k[0]==key[0]&&k[1]==key[1]){
+						pd=false
+					}
+						})
+				if (pd) {
+					map.set((key), new NodeInfo(gvalue, nsmin, nsmax));
+				}
 
 				//nsmax是对应β，nsmin是对应α
 				if (nowplay > 0) {//Min层 维护β
