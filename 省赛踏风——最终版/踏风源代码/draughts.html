@@ -1,58 +1,7 @@
 <!DOCTYPE html
 	PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
-
 <head>
-<!--
-本设计是应用javascript语言进行撰写，基于极大值极小值算法的100格国际跳棋AI，以下是具体规则：
-
-国际跳棋100格规则（符合计算机博弈赛规则）：
-
-所有棋子均在黑格子中行走。
-
-1、兵的走法
-
-兵的走法是：只能向前斜走一格，不能后退。
-
-2、兵的跳吃
-
-兵的跳吃是：黑白两枚棋子紧连在一条斜线上，如轮到某一方行棋时，对方棋子的前后正好有一空棋位能跳过对方的棋子，那么就可以跳过对方的棋子把被跳过的棋子吃掉，并从棋盘上取下
-
-3、兵的连跳
-
-兵的连跳是是跳过对方的棋子以后，又遇上可以跳过的棋子，那么就可以连续跳过去，把被跳过的棋子吃掉，并且从棋盘上一次取下。兵的走法是不能后退，但是遇到跳吃或连续跳时，可以退跳或吃子。
-
-4、兵的升变
-
-对局开始前双方在棋盘上摆的棋子都是兵，兵在对局过程中，走到或跳到对方底线停下，即可升变为“王”刚升变的王要到下一步才能享有王的走法的权利。
-
-兵在对局过程中，走到或跳到对方底线没停下（即中途经过），不可以升变为“王”。
-
-5、王的走法
-
-王的走法是：王在其位于任何一条斜线上均可进退，并且不限格数。（类似国际象棋的象的走法）
-
-6、王的跳吃
-
-王的跳吃是王与对方棋子遇在同一斜线上，不管相距有几个棋位，对方棋子的前后只要有空棋位，那么王棋就可以跳过去吃掉对方的棋子，而且跳吃时要跳过的对方棋子前后面的那一个空位里。
-
-7、王的连跳
-
-王的连跳与兵连跳的情况基本上相同，只是不限距离。
-
-吃子规定
-1、有吃必吃
-
-凡有跳吃或连跳机会时，不管对自己是否有利都必须连续跳吃或跳过，尤其是王。如果有连跳的局面，必须将对方所有的棋子跳完，直到无可再跳时才能停下。
-
-2、吃多数棋子（必须吃多不能吃少）
-
-如果有两条路线或2枚棋子都能吃对方的棋子，那么不管是否对自己有利，必须吃多的棋子。例如：同时在两条路线上可以吃对方的棋子，一条路线上能吃3枚棋子，另一条路线上能吃2枚棋子，必须先跳吃3枚棋子（的线路）。
-
-3、土耳其打击
-
-在连跳时，王或兵都必须将对方所有可能跳过的棋子跳完以后，才可以将对方被跳过的棋子从棋盘上一次性取下。一着棋连跳中即不允许跳一枚（棋子）取一枚（棋子），也不允许重复地两次跳过对方的同一枚棋子。利用这条规定形成的吃子方法叫做土耳其打击。
--->
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<link href="style/main.css" rel="stylesheet" type="text/css" />
 	<title>国际跳棋</title>
@@ -64,9 +13,9 @@
 		wmoveimg = "stonem.png";
 		estoneimg = ["stonewe.png", "stoneble.png"];
 		ekstoneimg = ["stonekwe.png", "stonekble.png"];
-		var sltstone = -1
-		var ustonea = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20];
-		var peata = [[[6, 11]],//0
+		var sltstone = -1;//选中的石头
+		
+		var peata = [[[6, 11]],//0，普通吃动作
 		[[6, 10], [7, 12]],
 		[[7, 11], [8, 13]],
 		[[8, 12], [9, 14]],
@@ -116,7 +65,7 @@
 		[[41, 36], [42, 38]],
 		[[42, 37], [43, 39]],
 		[[43, 38]]];
-		//前一个数组代表白方的进攻方向 后一个数组代表黑方的进攻方向
+		//每个位置，能攻击的{左上,右上}集合，{左下，右下}集合
 		var pmovea = [[[], [5, 6]],//0
 		[[], [6, 7]],
 		[[], [7, 8]],
@@ -167,7 +116,7 @@
 		[[41, 42], []],
 		[[42, 43], []],
 		[[43, 44], []]];
-		//右下 左下 右上 坐上 
+		//{右下} {左下} {右上} {左上} 构成的集合
 		var kmovea = [[[6, 11, 17, 22, 28, 33, 39, 44], [5], [], []],//0
 		[[7, 12, 18, 23, 29, 34], [6, 10, 15], [], []],
 		[[8, 13, 19, 24], [7, 11, 16, 20, 25], [], []],
@@ -218,7 +167,8 @@
 		[[], [], [42, 38, 33, 29, 24], [41, 36, 30, 25]],
 		[[], [], [43, 39, 34], [42, 37, 31, 26, 20, 15]],
 		[[], [], [44], [43, 38, 32, 27, 21, 16, 10, 5]]];
-		var boardvd = [9, 9, 9, 9, 9,
+		
+		var boardvd = [9, 9, 9, 9, 9, //估值棋盘
 			9, 9, 9, 9, 9,
 			8, 9, 9, 9, 8,
 			7, 8, 9, 9, 7,
@@ -239,22 +189,27 @@
 			-8, -9, -9, -9, -8,
 			-9, -9, -9, -9, -9,
 			-9, -9, -9, -9, -9];
-		var smovea = [];
-		var semovea = [];
-		var sestonea = [];
-		var mstep = 1;
-		var amove = [];
-		var aestone = [];
-		var nowmove = [];
-		var estep = 0;
-		var clkeata = [];
-		var cestep = 0;
-		var sboarda = [];
-		var sdeep = 5;
-		var clkbm = 1;
-		var gamestep = 0;
-		var spoint = 0;
-		var cuttime = 0;
+
+		var smovea = [];//用于存储游戏过程中的简单移动顺序
+		var semovea = []; //最长的，落点的棋子的位置的序列
+		var sestonea = []; //最长的，被跳过的棋子的序列（即被吃掉）
+		var mstep = 1; //最长的，吃子步数初始化为1。
+		var amove = []; //当前棋局
+		var aestone = []; //当前走法中被跳过的棋子的序列
+		var nowmove = []; //当前可以走的序列，`concat` 方法用于将 `semovea[0]` 和 `sestonea[0]` 数组连接起来
+		var estep = 0; //该变量代表点击的吃步，初始化为0
+		var clkeata = []; //鼠标点击的棋子和落点位置
+		var cestep = 0;  //代表当前吃子的步数
+		var sboarda = [];//用来存放搜索时棋盘的状态。
+		var sdeep = 7;//搜索深度
+		var clkbm = 1;//点击按钮
+		var gamestep = 0;//游戏深度
+		var alpha = -10000;//α - β 剪枝策略中的初始值
+		var beta = 10000;
+
+
+
+
 
 		function rid(id) {
 			return document.getElementById(id);
@@ -347,13 +302,13 @@
 					}
 
 
-				} else if (boarda[n] == 1000 && sltstone != -1) {//点击的是一个指针？
-					if (ismove(sltstone, n)) {//从sltstone到n是可移动的
-						a = sltstone;
+				} else if (boarda[n] == 1000 && sltstone != -1) {//点击的是一个指针 且 选中的石头合法
+					if (ismove(sltstone, n)) {//并且sltstone到n是可移动的
+						a = sltstone;//保存能移动的棋子为a
 						b = n;
 						stonemove(a, b);
 						cleanwmove();
-						if (semovea.length > 0) {
+						if (semovea.length > 0) {//存在能被吃的序列
 							stoneeat(a, b);
 							if (mstep > 1) {
 								cestep = 1;
@@ -370,16 +325,14 @@
 							changeplayer();
 						}
 
-					} else {
-
-					}
+					} else {}
 
 				} else if (boarda[n] == 1000 && cestep > 0) {
-					cestep++;
+					cestep++;//点击的是一个指针，当前步数大于0
 					clkeata.push(n);
 					printwmove2(cestep, n);
-					stonemove(clkeata[clkeata.length - 2], n);
-					stoneeat(clkeata[clkeata.length - 2], n)
+					stonemove(clkeata[clkeata.length - 2], n);//移动棋子
+					stoneeat(clkeata[clkeata.length - 2], n)//渲染被吃掉的棋子动画
 
 					if (cestep == mstep) {
 						cleaneatstone();
@@ -392,13 +345,11 @@
 					}
 
 
-				} else {
-
 				}
 			}
 		}
-		function uptoking(p) {
-			if (p < 5 && boarda[p] == 1 && cestep == 0) {
+		function uptoking(p) { //升级成王
+			if (p < 5 && boarda[p] == 1 && cestep == 0) { 
 				boarda[p] = 10;
 			}
 			if (p > 44 && boarda[p] == -1 && cestep == 0) {
@@ -422,23 +373,23 @@
 			if (nowplay == 1) {
 				nowplay = -1;
 				cleanpointer();
-                //计时器功能
-                startTime = new Date();
-                timerDisplay.textContent = '计时器已启动';
-                isTimerRunning = true;
-                // 启动定时器以实时更新计时器的时间显示
-                timerInterval = setInterval(updateTimer, 1000);
+				//计时器功能
+				startTime = new Date();
+				timerDisplay.textContent = '计时器已启动';
+				isTimerRunning = true;
+				// 启动定时器以实时更新计时器的时间显示
+				timerInterval = setInterval(updateTimer, 1000);
 				upplay();
-                endTime = new Date();
-                elapsedTime = (endTime - startTime) / 1000; // 转换为秒
-                timerDisplay.textContent = '本步机器落子总共耗时：' + elapsedTime + '秒';
-                isTimerRunning = false;
-		        // 将数据写入文本文件
-		        var data = '开始时间: ' + startTime + '\n结束时间: ' + endTime + '\n总耗时: ' + elapsedTime + '秒';
-                downloadFile(data, 'timer_data.txt');
-                // 停止定时器
-                clearInterval(timerInterval);
-        
+				endTime = new Date();
+				elapsedTime = (endTime - startTime) / 1000; // 转换为秒
+				timerDisplay.textContent = '本步机器落子总共耗时：' + elapsedTime + '秒';
+				isTimerRunning = false;
+				// 将数据写入文本文件
+				var data = '开始时间: ' + startTime + '\n结束时间: ' + endTime + '\n总耗时: ' + elapsedTime + '秒';
+				downloadFile(data, 'timer_data.txt');
+				// 停止定时器
+				clearInterval(timerInterval);
+
 
 
 			} else if (nowplay == -1) {
@@ -454,17 +405,15 @@
 		}
 		//机器玩
 		function upplay() {
-			makemove();
+			makemove();//查找可能的移动
 			if (semovea.length == 0 && smovea.length == 0) {
-				toend();
+				toend();//没有可以移动的棋子了，那么判断胜负
 			} else {
 				if (semovea.length == 1) {
 					nowmove = [semovea[0].concat(), sestonea[0].concat()];
 				} else if (smovea.length == 1) {
 					nowmove = [smovea[0].concat(), []];
 				} else {
-					spoint = 0;
-					cuttime = 0;
 					searchmove(0, 10000, -10000);
 				}
 			}
@@ -519,12 +468,12 @@
 		function makepeatmove(clr, sf, ss) {
 			re = false;//临时变量re
 			for (var n = 0; n < peata[ss].length; n++) {//遍历被点击棋子的整个可吃移动数组
-				//如果被越过棋子和目前点击的棋子不是一家 且 落点的状态为空 且 落点位置不为-1（可以修改吧？）
+				//如果被越过棋子和目前点击的棋子不是一家 且 落点的状态为空 且 落点位置不为-1
 				if (boarda[peata[ss][n][0]] * clr < 0 && boarda[peata[ss][n][1]] == 0 && peata[ss][n][1] != sf) {
 					isnorepeat = true;//可移动
 					for (var m = 0; m < aestone.length; m++) {
 						if (aestone[m] == peata[ss][n][0]) {
-							//越过的位置会被吃掉？则不能越过
+							//越过的位置会被吃掉,则不能越过
 							isnorepeat = false;
 							break;
 						}
@@ -546,7 +495,6 @@
 				if (amove.length > 1) {//如果有可吃的棋子，判断是不是最长的吃子序列
 					if (amove.length - 1 > mstep) {//被吃的棋子和吃的步数之间相差1
 						mstep = amove.length - 1;//选择最长的吃子序列
-
 						semovea = [];
 						sestonea = [];
 						var pmove = amove.concat();
@@ -558,7 +506,7 @@
 						var pmove = amove.concat();  //保存amove
 						var pestone = aestone.concat(); ////保存aestone 以下是保存过程
 						noerepeat = true;//临时变量
-						for (var x = 0; x < sestonea.length; x++) {//如果当前吃子的起点和终点都相同？
+						for (var x = 0; x < sestonea.length; x++) {//如果当前吃子的起点和终点都相同
 							if (pmove[0] == semovea[x][0] && pmove[pmove.length - 1] == semovea[x][semovea[x].length - 1]) {
 
 								var estone1 = pestone.concat();
@@ -615,7 +563,7 @@
 									re = true;
 									aestone.push(es);//将es进入到被跳过棋子序列
 									amove.push(kmovea[ss][n][m]);//将当前棋子的位置进入到amove
-									if (n == 0) {//如果是从0方位，则下一次到3，3到
+									if (n == 0) {//如果是从0方位，则下一次到3
 										tsd = 3;
 									} else if (n == 1) {
 										tsd = 2;
@@ -677,7 +625,7 @@
 						var pmove = amove.concat();  //将当前序列保存起来
 
 						var pestone = aestone.concat();
-						noerepeat = true;//没有更长的了==true？
+						noerepeat = true;//没有更长的了==true
 						if (nowplay == -1) {//如果此时是-1玩家
 							for (var x = 0; x < sestonea.length; x++) {//遍历最长的能吃的序列
 								if (pmove[0] == semovea[x][0] && pmove[pmove.length - 1] == semovea[x][semovea[x].length - 1]) {
@@ -750,7 +698,7 @@
 			var nsmax = smax;//假设现在就是最大值和最小值
 			var nsmin = smin;
 			makemove();//生成一个移动
-			if (semovea.length == 0 && smovea.length == 0) {//如果没有移动
+			if (semovea.length == 0 && smovea.length == 0) {//如果没有移动或者普通移动，结束游戏？
 				return nowplay * -5000;//返回指针？
 
 			}
@@ -760,7 +708,7 @@
 					return gv;//返回估值
 				}
 			}
-			if (semovea.length != 0) {//如果有被吃了的棋子 那么就优先吃
+			if (semovea.length != 0) {//如果 待吃（待走） 序列内有棋子 应该把它们先吃掉 再在此基础上递归
 				var shmovea = semovea.concat(); //把 吃子移动 落点棋子放入到搜索数列
 			}
 			else {
@@ -774,11 +722,9 @@
 			var moven = -1;
 			var sd = sdp;
 			if (semovea.length < 1) {
-				sd++;//如果进行了搜索 搜索深度+1
+				sd++;//吃动作不占用步数
 			}
-			else {
-				//？
-			}
+
 			for (var n = 0; n < shmovea.length; n++) {//将每一个位置对应的吃子序列的终点的期盼状态修改为起点位置，并将起点位置设置为0，代表棋子已经走到了终点位置
 				boarda[shmovea[n][shmovea[n].length - 1]] = boarda[shmovea[n][0]];
 				boarda[shmovea[n][0]] = 0;
@@ -795,42 +741,37 @@
 					for (var m = 0; m < ssestonea[n].length; m++) {
 						boarda[ssestonea[n][m]] = 0;
 					}
-					
+
 				}
 
 				gvalue = searchmove(sd, nsmax, nsmin);//递归次数等于shmovea的长度
 				boarda = sboarda[sboarda.length - 1].concat();//将搜索到的最优棋盘赋给原始棋盘
-
-				if (nowplay > 0) {//nowplay：这个变量代表当前玩家。 它被初始化为1。
-					if (gvalue < nsmin) {//如果得分小于全局最小值，则直接更新最佳得分(mvalue)和最佳移动序号。
-						mvalue = gvalue;//将当前的游戏估值保存起来
-						moven = n;//n是当前在落点序列里棋子的位置
-						break;
-					} else {
-						if (gvalue < mvalue) {//如果当前游戏值比当前保存的小，也进行保存
-							mvalue = gvalue;//mvalue
-							nsmax = mvalue;//将最大值赋给nsmax
-							moven = n;//当前移动的棋子
-						}
-					}
-
-				}
-				else {//对于玩家1来说 如果现在的游戏得分大于全局得分 则更新
-					if (gvalue > nsmax) {
-						mvalue = gvalue;
-						moven = n;
-						break;
-					} else {
-						if (gvalue > mvalue) {
+				//var nsmax （β） 10000 = smax  	，var nsmin （α）-10000 = smin假设现在就是最大值和最小值
+				if (nowplay > 0) {//Min层 维护β （α<β） 如果当前值小于β
+					
+						if (gvalue < mvalue) {//如果当前的gvalue小于mvalue，则更新最小值
 							mvalue = gvalue;
-							nsmin = mvalue;
+							nsmax = Math.min(mvalue, nsmax);//var min = Math.min(a, b);
 							moven = n;
 						}
+					if (nsmin >= nsmax) {//剪枝
+						break;
+					}
+				}
+				else {//MAX层 维护α
+					
+						if (gvalue > mvalue) {//游戏值gvalue大于mvalue,则更新最大值
+							mvalue = gvalue;//mvalue保留下最大的值
+							nsmin = Math.max(mvalue, nsmin);//更新α
+							moven = n;
+						}
+					if (nsmin >= nsmax) {
+						break;
 					}
 				}
 			}//循环结束
 
-			nowplay *= -1;//换边？
+			nowplay *= -1;//换边
 			sboarda.pop();//删除最后一个元素
 
 			if (sdp == 0) {//没有进行搜索
@@ -844,26 +785,28 @@
 			}
 			return mvalue;
 		}
+
 		function gamevalue() {
 			v1 = 0;
 			v2 = 0;
 			v3 = 0;
 			for (var n = 0; n < 50; n++) {
-				v1 += boarda[n];
+				v1 += boarda[n];//所有棋子的值v1
+
 				if (boarda[n] == 1 || boarda[n] == -1) {
 					for (var x = 0; x < peata[n].length; x++) {
 						if (boarda[peata[n][x][0]] == 0) {
 
-							v2 += boarda[n];
+							v2 += boarda[n];//可以吃的数量，为0则代表这个位置为空，可以吃完子后落到这个位置
 						}
 					}
 					if (boarda[n] == 1) {
-						v3 += boardvd[n];
+						v3 += boardvd[n];//加上棋盘估值
 					} else {
 						v3 += boardvu[n];
 					}
 
-				} else if (boarda[n] == 10 || boarda[n] == -10) {
+				} else if (boarda[n] == 10 || boarda[n] == -10) {//如果这里是一个王，那么使用王的四个方向来计算估值
 					v2 += kmovea[n][0].length + kmovea[n][1].length + kmovea[n][2].length + kmovea[n][3].length;
 				}
 			}
@@ -871,26 +814,24 @@
 
 			return v1 + v2 + v3;
 		}
-	
-		function domove() {
 
-			if (nowmove.length == 2) {
+		function domove() {//该函数执行搜索算法选择的移动
+
+			if (nowmove.length == 2) {//有可以移动的
 
 				if (nowmove[1].length == 0) {
-
 					stonemove(nowmove[0][0], nowmove[0][1]);
-					uptoking(nowmove[0][1]);
+					uptoking(nowmove[0][1]);//查看终点位置是否为王
 					changeplayer();
 				} else {
-
-					estep = 0;
+					estep = 0;//吃子移动
 					eatmove();
 				}
 			}
 		}
 		function eatmove() {
 
-			if (mstep > estep) {
+			if (mstep > estep) {//连吃，直到吃到mstep步数
 
 				stonemove(nowmove[0][estep], nowmove[0][estep + 1]);
 				eatstone(nowmove[1][estep]);
@@ -898,13 +839,13 @@
 				setTimeout(eatmove, 1000);
 
 			} else if (mstep == estep) {
-				uptoking(nowmove[0][nowmove[0].length - 1]);
+				uptoking(nowmove[0][nowmove[0].length - 1]);//吃完了更新
 				cleaneatstone();
 				changeplayer();
 			}
 		}
 		function cleaneatstone() {
-			for (n = 0; n < 50; n++) {
+			for (n = 0; n < 50; n++) { //清空被吃掉的棋子残影
 				if (boarda[n] == 500 || boarda[n] == -500 || boarda[n] == 5000 || boarda[n] == -5000) {
 					boarda[n] = 0;
 
@@ -925,7 +866,7 @@
 
 			printboard();
 		}
-		function isamstone(a) {
+		function isamstone(a) { //通过判断是否这个棋子在{普通走}或者{被吃}集合中，来决定返回值
 			for (n = 0; n < smovea.length; n++) {
 				if (smovea[n][0] == a) return true;
 			}
@@ -947,7 +888,7 @@
 		function printwmove(a) {
 			cleanwmoveimg();
 			for (n = 0; n < smovea.length; n++) {
-				if (smovea[n][0] == a) {
+				if (smovea[n][0] == a) { //在smovea中 {}{0} 代表起点  {}{1}代表终点
 
 					boarda[smovea[n][1]] = 1000;
 				}
@@ -960,7 +901,7 @@
 			}
 			printboard();
 		}
-		function printwmove2(est, ens) {
+		function printwmove2(est, ens) {//步数 + 棋子n
 			cleanwmoveimg();
 
 			if (est <= mstep) {
@@ -971,9 +912,9 @@
 					for (var x = 0; x <= est; x++) {
 
 						if (semovea[n][x] == clkeata[x]) cn++;
-					}
+					} 
 
-					if (cn == est + 1) {
+					if (cn == est + 1) {//cn从0开始
 
 						if (est < mstep) {
 
@@ -1023,7 +964,7 @@
 				for (var y = 0; y < semovea[x].length - 1; y++) {
 					if (semovea[x][y] == a && semovea[x][y + 1] == b) {
 
-						boarda[sestonea[x][y]] = -500;
+						boarda[sestonea[x][y]] = -500;//被吃掉
 						printboard();
 						break;
 					}
@@ -1031,7 +972,7 @@
 
 			}
 		}
-		function stonemove(a, b) {
+		function stonemove(a, b) {//启动交换a，b
 
 			boarda[b] = boarda[a];
 			saveData(a + 1, b + 1);
@@ -1043,12 +984,12 @@
 		var data = '';
 		var g = 1;
 		function saveData(a, b) {
-  	    if(Math.abs(a-b)>5)
-		    data += g+'. ' + a + '×' + b +'\n';
-	    else
-		    data += g+'. ' + a + '-' + b +'\n';
- 	        g++;// 增加回合数
-        }
+			if (Math.abs(a - b) > 5)
+				data += g + '. ' + a + '×' + b + '\n';
+			else
+				data += g + '. ' + a + '-' + b + '\n';
+			g++;// 增加回合数
+		}
 
 
 
@@ -1120,7 +1061,10 @@
 		<div id='output'></div>
 	</div>
 	<div id="board">
-		<!--棋盘格子区域-->
+		<!--棋盘格子区域<td>：这是一个 HTML 标签，表示表格单元格。
+		id="stn26"：这是一个属性，用于给该元素指定一个唯一的标识符。在这种情况下，该元素的唯一标识符为 "stn26"。
+		align="left"：这是一个属性，用于指定元素内容的水平对齐方式。在这种情况下，内容将左对齐。
+		valign="top"：这是一个属性，用于指定元素内容的垂直对齐方式。在这种情况下，内容将顶部对齐。-->
 		<table id="tb1" align="center">
 			<tr>
 				<td align=right valign=bottom> </td>
@@ -1610,7 +1554,7 @@
 			</tr>
 		</table>
 	</div>
-	
+
 	<div id="out"></div>
 </body>
 
@@ -1621,32 +1565,34 @@
 <head>
 	<title>计时器</title>
 </head>
-<body>
-  
-  <p id="timerDisplay">您可以落子</p>
 
-  <script>
-    var timerDisplay = document.getElementById('timerDisplay');
-    var startTime, endTime, elapsedTime, timerInterval;
-    var isTimerRunning = false;
-    function updateTimer() {
-      var currentTime = new Date();
-      elapsedTime = (currentTime - startTime) / 1000; // 转换为秒
-      timerDisplay.textContent = '计时时间：' + elapsedTime + '秒';
-    }
-	function downloadFile(data, filename) {
-      var element = document.createElement('a');
-      element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(data));
-      element.setAttribute('download', filename);
-      element.style.display = 'none';
-      document.body.appendChild(element);
-      element.click();
-      document.body.removeChild(element);
-    }
-	const downloadBtn = document.createElement('button');
-	downloadBtn.textContent = '下载记录';
-	downloadBtn.addEventListener('click', downloadRecord);
-	document.body.appendChild(downloadBtn);
-  </script>
+<body>
+
+	<p id="timerDisplay">您可以落子</p>
+
+	<script>
+		var timerDisplay = document.getElementById('timerDisplay');
+		var startTime, endTime, elapsedTime, timerInterval;
+		var isTimerRunning = false;
+		function updateTimer() {
+			var currentTime = new Date();
+			elapsedTime = (currentTime - startTime) / 1000; // 转换为秒
+			timerDisplay.textContent = '计时时间：' + elapsedTime + '秒';
+		}
+		function downloadFile(data, filename) {
+			var element = document.createElement('a');
+			element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(data));
+			element.setAttribute('download', filename);
+			element.style.display = 'none';
+			document.body.appendChild(element);
+			element.click();
+			document.body.removeChild(element);
+		}
+		const downloadBtn = document.createElement('button');
+		downloadBtn.textContent = '下载记录';
+		downloadBtn.addEventListener('click', downloadRecord);
+		document.body.appendChild(downloadBtn);
+	</script>
 </body>
+
 </html>
