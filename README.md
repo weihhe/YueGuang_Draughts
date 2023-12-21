@@ -1,9 +1,7 @@
 # YueGuang_Draughts
 ### 本项目为：
 LNTU——**跃光队**，计算机博弈大赛参赛作品。（2023）
-
 - 参与赛道为**100格**国际跳棋
-
 - 项目采用语言——**javascript**
 
 ### 内部包含
@@ -23,10 +21,13 @@ LNTU——**跃光队**，计算机博弈大赛参赛作品。（2023）
 ## 贡献成员：
 
 - [@weihhe（队长)](https://github.com/weihhe)
-- [@于南洋](https://github.com/yny0520)
 - [@Yui ](https://github.com/yui-megumi)
+- [@于南洋](https://github.com/yny0520)
 
 ---
+
+
+
 
 ### 现阶段任务（已圆满完成）
 
