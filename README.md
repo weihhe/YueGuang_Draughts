@@ -22,7 +22,6 @@ LNTU——**跃光队**，计算机博弈大赛参赛作品。（2023）
 
 - [@weihhe（队长)](https://github.com/weihhe)
 - [@Yui ](https://github.com/yui-megumi)
-- [@于南洋](https://github.com/yny0520)
 - [@rprophet](https://github.com/rprophet)
 
 ---
